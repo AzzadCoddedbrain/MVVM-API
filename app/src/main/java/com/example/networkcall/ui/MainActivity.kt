@@ -13,11 +13,12 @@ import com.dev.adnetworkm.CheckNetworkStatus
 import com.example.networkcall.R
 import com.example.networkcall.adapter.DummyAdapter
 import com.example.networkcall.databinding.ActivityMainBinding
+import com.example.networkcall.model.NetworkResult
 
 class MainActivity : AppCompatActivity() {
 
 
-    val viewModel:TodoViewmodel by viewModels()
+    val viewModel: TodoViewmodel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         // start shimmer effect
         binding.shimmerViewContainer.startShimmerAnimation()
-        gotonextativity()
+//        gotonextativity()
         checknetworkstatus()
 
     }
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
             when (t) {
                 true -> {
                     showdummy()
+
+                    call()
                 }
                 false -> {
                     Toast.makeText(this, "No Network Connection", Toast.LENGTH_SHORT).show()
@@ -49,31 +52,58 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun call() {
+        viewModel.callApi("id")
+    }
+
 
     private fun showdummy() {
+
+        viewModel.movieResponse.observe(this) {
+            when (it) {
+                is NetworkResult.Loading -> {
+                    Toast.makeText(this, "loading", Toast.LENGTH_SHORT).show()
+                }
+
+                is NetworkResult.Failure -> {
+//                    Log.e("error", "onCreate: "+it.errorMessage )
+//                    Toast.makeText(this, it.errorMessage, Toast.LENGTH_SHORT).show()
+//                    binding.progressbar.isVisible = false
+                    Toast.makeText(this, "Failds", Toast.LENGTH_SHORT).show()
+                }
+
+                is NetworkResult.Success -> {
+/*                    movieAdapter.updateMovies(it.data)
+                    binding.progressbar.isVisible = false*/
+                    binding.shimmerViewContainer.stopShimmerAnimation()
+                    binding.shimmerViewContainer.visibility = View.GONE
+                    binding.recyclerView.adapter = DummyAdapter(it.data, applicationContext)
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+/*
         viewModel.firstTodo.observe(this, Observer { t ->
+
             binding.shimmerViewContainer.stopShimmerAnimation()
             binding.shimmerViewContainer.visibility = View.GONE
             binding.recyclerView.adapter = DummyAdapter(t, applicationContext)
             binding.recyclerView.adapter?.notifyDataSetChanged()
-        })
-    }
+        })*/
+        }
 
-    fun gotonextativity() {
-        binding.fab.setOnClickListener {
-            // Ordinary Intent for launching a new activity
-            val intent = Intent(this, ReadActivity::class.java)
-            // Get the transition name from the string
-            val transitionName = getString(R.string.transition_string)
-            // Define the view that the animation will start from
-            val viewStart: View = findViewById(R.id.fab)
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                this,
-                viewStart,  // Starting view
-                transitionName // The String
-            )
-            //Start the Intent
-            ActivityCompat.startActivity(this, intent, options.toBundle())
+        fun gotonextativity() {
+            binding.fab.setOnClickListener {
+                val intent = Intent(this, ReadActivity::class.java)
+                val transitionName = getString(R.string.transition_string)
+                val viewStart: View = findViewById(R.id.fab)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this, viewStart,  // Starting view
+                    transitionName // The String
+                )
+                ActivityCompat.startActivity(this, intent, options.toBundle())
+            }
         }
     }
 }
