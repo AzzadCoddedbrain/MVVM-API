@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 is NetworkResult.Success -> {
+
                     response.data?.let {
                         //bind the data to the ui
                         binding.shimmerViewContainer.stopShimmerAnimation()

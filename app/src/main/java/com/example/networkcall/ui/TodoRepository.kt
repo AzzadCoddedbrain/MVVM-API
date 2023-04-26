@@ -6,7 +6,7 @@ import com.example.networkcall.utils.Webservice
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
-class TodoRepository(private val client: Webservice = RetrofitClient.retrofit) {
+class TodoRepository(private val client : Webservice = RetrofitClient.getInstance()) {
 
     suspend fun getPopularMovies(id: String) = flow {
         emit(NetworkResult.Loading())
@@ -15,5 +15,7 @@ class TodoRepository(private val client: Webservice = RetrofitClient.retrofit) {
     }.catch { e ->
         emit(NetworkResult.Error(e.message ?: "Unknown Error"))
     }
+
+
 
 }
