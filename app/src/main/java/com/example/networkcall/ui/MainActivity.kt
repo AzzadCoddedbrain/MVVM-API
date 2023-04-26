@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
             when (t) {
                 true -> {
                     initObserver()
-
                     call()
                 }
                 false -> {
@@ -59,22 +58,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObserver() {
 
-        viewModel.callApi("it").observe(this) {
-            when (it) {
+        viewModel.callApi("it").observe(this) { response->
+            when (response) {
                 is NetworkResult.Loading -> {
                     Toast.makeText(this, "loading", Toast.LENGTH_SHORT).show()
                 }
 
-                is NetworkResult.Failure -> {
-                    Toast.makeText(this, "Failds", Toast.LENGTH_SHORT).show()
+                is NetworkResult.Error -> {
+                    Toast.makeText(this, "Failds"+response.message, Toast.LENGTH_SHORT).show()
                 }
 
                 is NetworkResult.Success -> {
-                    binding.shimmerViewContainer.stopShimmerAnimation()
-                    binding.shimmerViewContainer.visibility = View.GONE
-                    binding.recyclerView.adapter = DummyAdapter(it.data, applicationContext)
-                    binding.recyclerView.adapter?.notifyDataSetChanged()
-                    Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
+                    response.data?.let {
+                        //bind the data to the ui
+                        binding.shimmerViewContainer.stopShimmerAnimation()
+                        binding.shimmerViewContainer.visibility = View.GONE
+                        binding.recyclerView.adapter = DummyAdapter(it , applicationContext)
+                        binding.recyclerView.adapter?.notifyDataSetChanged()
+                        Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
             }
 

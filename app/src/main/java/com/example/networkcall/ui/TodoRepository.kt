@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.flow
 class TodoRepository(private val client: Webservice = RetrofitClient.retrofit) {
 
     suspend fun getPopularMovies(id: String) = flow {
-        emit(NetworkResult.Loading(true))
+        emit(NetworkResult.Loading())
         val response = client.getMostPopularMovies()
         emit(NetworkResult.Success(response))
     }.catch { e ->
-        emit(NetworkResult.Failure(e.message ?: "Unknown Error"))
+        emit(NetworkResult.Error(e.message ?: "Unknown Error"))
     }
 
 }
