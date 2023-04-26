@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         CheckNetworkStatus.getNetworkLiveData(applicationContext).observe(this, Observer { t ->
             when (t) {
                 true -> {
-                    showdummy()
+                    initObserver()
 
                     call()
                 }
@@ -57,40 +57,27 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showdummy() {
+    private fun initObserver() {
 
-        viewModel.movieResponse.observe(this) {
+        viewModel.callApi("it").observe(this) {
             when (it) {
                 is NetworkResult.Loading -> {
                     Toast.makeText(this, "loading", Toast.LENGTH_SHORT).show()
                 }
 
                 is NetworkResult.Failure -> {
-//                    Log.e("error", "onCreate: "+it.errorMessage )
-//                    Toast.makeText(this, it.errorMessage, Toast.LENGTH_SHORT).show()
-//                    binding.progressbar.isVisible = false
                     Toast.makeText(this, "Failds", Toast.LENGTH_SHORT).show()
                 }
 
                 is NetworkResult.Success -> {
-/*                    movieAdapter.updateMovies(it.data)
-                    binding.progressbar.isVisible = false*/
                     binding.shimmerViewContainer.stopShimmerAnimation()
                     binding.shimmerViewContainer.visibility = View.GONE
                     binding.recyclerView.adapter = DummyAdapter(it.data, applicationContext)
                     binding.recyclerView.adapter?.notifyDataSetChanged()
                     Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
                 }
-
             }
-/*
-        viewModel.firstTodo.observe(this, Observer { t ->
 
-            binding.shimmerViewContainer.stopShimmerAnimation()
-            binding.shimmerViewContainer.visibility = View.GONE
-            binding.recyclerView.adapter = DummyAdapter(t, applicationContext)
-            binding.recyclerView.adapter?.notifyDataSetChanged()
-        })*/
         }
 
         fun gotonextativity() {
