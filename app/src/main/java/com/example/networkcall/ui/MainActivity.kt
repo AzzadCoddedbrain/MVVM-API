@@ -15,15 +15,13 @@ import com.example.networkcall.R
 import com.example.networkcall.adapter.DummyAdapter
 import com.example.networkcall.databinding.ActivityMainBinding
 import com.example.networkcall.model.NetworkResult
-import com.example.networkcall.model.TodouItem
 import com.example.networkcall.utils.SharedPreferencesManager
 
 class MainActivity : AppCompatActivity() {
 
-
     val viewModel: TodoViewmodel by viewModels()
 
-    private val s by lazy { SharedPreferencesManager() }
+    private val saveData by lazy { SharedPreferencesManager }
 
 
     private lateinit var binding: ActivityMainBinding
@@ -35,12 +33,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        SharedPreferencesManager.putString(this,"data","helloWorl")
+        saveData.putSaveString(this,"data","helloWorl")
         // start shimmer effect
         binding.shimmerViewContainer.startShimmerAnimation()
         gotonextativity()
         checknetworkstatus()
-        Log.e("TAG", "data: result "+SharedPreferencesManager.getString(this,"data",""))
+        Log.e("TAG", "data: result "+saveData.getSaveString(this,"data",""))
         gotonextativity()
 
     }
@@ -50,10 +48,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ReadActivity::class.java)
             val transitionName = getString(R.string.transition_string)
             val viewStart: View = findViewById(R.id.fab)
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                this, viewStart,  // Starting view
-                transitionName // The String
-            )
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, viewStart,  transitionName )
             ActivityCompat.startActivity(this, intent, options.toBundle())
         }
     }

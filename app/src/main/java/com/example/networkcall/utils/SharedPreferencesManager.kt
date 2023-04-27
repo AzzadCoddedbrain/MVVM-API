@@ -3,8 +3,6 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.example.networkcall.model.TodouItem
-import com.example.networkcall.ui.MainActivity
 
 class SharedPreferencesManager  {
     var userName=""
@@ -33,13 +31,13 @@ class SharedPreferencesManager  {
             return getInstance(context).getLong(key, default)
         }
 
-        fun putString(context: Context, key: String, value: String) {
+        fun putSaveString(context: Context, key: String, value: String) {
             editor = getInstance(context).edit()
             editor!!.putString(key, value)
             editor!!.apply()
         }
 
-        fun getString(context: Context, key: String, default: String): String {
+        fun getSaveString(context: Context, key: String, default: String): String {
             return getInstance(context).getString(key, default)!!
         }
 
