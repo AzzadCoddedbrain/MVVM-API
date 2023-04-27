@@ -2,6 +2,7 @@ package com.example.networkcall.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -14,11 +15,16 @@ import com.example.networkcall.R
 import com.example.networkcall.adapter.DummyAdapter
 import com.example.networkcall.databinding.ActivityMainBinding
 import com.example.networkcall.model.NetworkResult
+import com.example.networkcall.model.TodouItem
+import com.example.networkcall.utils.SharedPreferencesManager
 
 class MainActivity : AppCompatActivity() {
 
 
     val viewModel: TodoViewmodel by viewModels()
+
+    private val s by lazy { SharedPreferencesManager() }
+
 
     private lateinit var binding: ActivityMainBinding
 
@@ -27,11 +33,29 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
+        SharedPreferencesManager.putString(this,"data","helloWorl")
         // start shimmer effect
         binding.shimmerViewContainer.startShimmerAnimation()
-//        gotonextativity()
+        gotonextativity()
         checknetworkstatus()
+        Log.e("TAG", "data: result "+SharedPreferencesManager.getString(this,"data",""))
+        gotonextativity()
 
+    }
+
+    private fun gotonextativity() {
+        binding.fab.setOnClickListener {
+            val intent = Intent(this, ReadActivity::class.java)
+            val transitionName = getString(R.string.transition_string)
+            val viewStart: View = findViewById(R.id.fab)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, viewStart,  // Starting view
+                transitionName // The String
+            )
+            ActivityCompat.startActivity(this, intent, options.toBundle())
+        }
     }
 
     private fun checknetworkstatus() {
@@ -84,17 +108,5 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        fun gotonextativity() {
-            binding.fab.setOnClickListener {
-                val intent = Intent(this, ReadActivity::class.java)
-                val transitionName = getString(R.string.transition_string)
-                val viewStart: View = findViewById(R.id.fab)
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    this, viewStart,  // Starting view
-                    transitionName // The String
-                )
-                ActivityCompat.startActivity(this, intent, options.toBundle())
-            }
-        }
     }
 }
