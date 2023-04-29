@@ -9,12 +9,12 @@ import kotlinx.coroutines.launch
 
 class TodoViewmodel(val repository: TodoRepository = TodoRepository()) : ViewModel() {
 
-    // call api with params
-    fun callApi(id:String)  : MutableLiveData<NetworkResult<Todou>> {
-        var movieResponse = MutableLiveData<NetworkResult<Todou>>()
+    var movieResponse = MutableLiveData<NetworkResult<Todou>>()
 
+    // call api with params
+    fun callApi()  : MutableLiveData<NetworkResult<Todou>> {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getPopularMovies(id).collectLatest {
+            repository.getPopularMovies().collectLatest {
                 movieResponse.postValue(it)
             }
         }

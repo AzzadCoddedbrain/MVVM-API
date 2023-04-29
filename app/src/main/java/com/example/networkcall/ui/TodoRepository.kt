@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 
 class TodoRepository(private val client : Webservice = RetrofitClient.getInstance()) {
 
-    suspend fun getPopularMovies(id: String) = flow {
+    suspend fun getPopularMovies() = flow {
         emit(NetworkResult.Loading())
         val response = client.getMostPopularMovies()
         emit(NetworkResult.Success(response))

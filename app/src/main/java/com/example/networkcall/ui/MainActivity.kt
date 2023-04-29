@@ -71,24 +71,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun call() {
-        viewModel.callApi("id")
+        viewModel.callApi()
     }
 
 
     private fun initObserver() {
 
-        viewModel.callApi("it").observe(this) { response->
+        viewModel.movieResponse.observe(this) { response->
             when (response) {
                 is NetworkResult.Loading -> {
                     Toast.makeText(this, "loading", Toast.LENGTH_SHORT).show()
                 }
 
                 is NetworkResult.Error -> {
+                    Log.e("TAG", "initObserver: "+response.message )
                     Toast.makeText(this, "Failds"+response.message, Toast.LENGTH_SHORT).show()
                 }
 
                 is NetworkResult.Success -> {
-
+                    Log.e("TAG", "initObserver: "+response.data )
                     response.data?.let {
                         //bind the data to the ui
                         binding.shimmerViewContainer.stopShimmerAnimation()
@@ -97,7 +98,6 @@ class MainActivity : AppCompatActivity() {
                         binding.recyclerView.adapter?.notifyDataSetChanged()
                         Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
                     }
-
                 }
             }
 
